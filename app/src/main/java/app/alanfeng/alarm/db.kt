@@ -90,7 +90,7 @@ sealed class TimeoutStrategy(val type: String, val data: String?) {
 
 sealed class Exclude(val type: String, val data: String?) {
     class Specific(val list: List<Long>) : Exclude("Specific", Json.encodeToString(list))
-    class Holidays : Exclude("Holidays", null)
+    object Holidays : Exclude("Holidays", null)
 }
 
 enum class TTSType {
@@ -104,7 +104,7 @@ enum class TTSVoice {
 
 @Dao
 interface AlarmDao : BaseDao<Alarm> {
-    @Query("select * from `alarm` order by hour,minute desc")
+    @Query("select * from alarm order by hour,minute desc")
     fun getAll(): List<Alarm>
 }
 
@@ -118,8 +118,8 @@ interface AlarmDao : BaseDao<Alarm> {
  */
 @Entity
 data class AlarmRecord(
-    @PrimaryKey
-    val id: Int = 0,
+    @PrimaryKey(autoGenerate = true)
+    val id: Int,
     val alarmId: String,
     val time: Long,
     val state: String
@@ -130,8 +130,8 @@ data class AlarmRecord(
 
 @Dao
 interface AlarmRecordDao : BaseDao<AlarmRecord> {
-    @Query("select * from `alarmrecord` order by time desc")
-    fun getAll(): List<Alarm>
+    @Query("select * from alarmrecord order by time desc")
+    fun getAll(): List<AlarmRecord>
 }
 
 
@@ -144,5 +144,63 @@ class Converters {
     @TypeConverter
     fun toListInt(string: String): List<Int> {
         return Json.decodeFromString(string)
+    }
+
+    @TypeConverter
+    fun fromListString(list: List<String>): String {
+        return Json.encodeToString(list)
+    }
+
+    @TypeConverter
+    fun toListString(string: String): List<String> {
+        return Json.decodeFromString(string)
+    }
+
+    @TypeConverter
+    fun fromTimeout(data: TimeoutStrategy): String {
+        return Json.encodeToString(data)
+    }
+
+    @TypeConverter
+    fun toTimeout(string: String): TimeoutStrategy {
+        val data = Json.decodeFromString<TimeoutStrategy>(string)
+        return when (data.type) {
+            "Backup" -> TimeoutStrategy.Backup(data.data!!)
+            else -> TimeoutStrategy.Repeat(data.data!!.toInt())
+        }
+    }
+
+    @TypeConverter
+    fun fromExclude(data: Exclude): String {
+        return Json.encodeToString(data)
+    }
+
+    @TypeConverter
+    fun toExclude(string: String): Exclude {
+        val data = Json.decodeFromString<Exclude>(string)
+        return when (data.type) {
+            "Specific" -> Exclude.Specific(Json.decodeFromString(data.data!!))
+            else -> Exclude.Holidays
+        }
+    }
+
+    @TypeConverter
+    fun fromTTSType(data: TTSType): String {
+        return data.name
+    }
+
+    @TypeConverter
+    fun toTTSType(string: String): TTSType {
+        return TTSType.valueOf(string)
+    }
+
+    @TypeConverter
+    fun fromTTSVoice(data: TTSVoice): String {
+        return data.name
+    }
+
+    @TypeConverter
+    fun toTTSVoice(string: String): TTSVoice {
+        return TTSVoice.valueOf(string)
     }
 }
