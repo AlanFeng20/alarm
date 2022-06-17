@@ -8,6 +8,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 object PlanRep {
+    suspend fun getById(id: String) = withContext(Dispatchers.IO) {
+        return@withContext db.planQueries.selectById(id)
+    }
     suspend fun getAll() = withContext(Dispatchers.IO) {
         return@withContext db.planQueries.selectAll()
     }

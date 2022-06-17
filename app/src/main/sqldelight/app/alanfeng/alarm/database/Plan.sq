@@ -9,6 +9,9 @@ CREATE TABLE Plan (
 selectAll:
 SELECT * FROM Plan ORDER BY created DESC ;
 
+selectById:
+SELECT * FROM Plan WHERE id = ?;
+
 selectNames:
 SELECT name FROM Plan;
 
