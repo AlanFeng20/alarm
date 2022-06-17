@@ -1,8 +1,9 @@
 CREATE TABLE AlarmRecord (
-     id INTEGER  PRIMARY KEY AUTOINCREMENT ,
+     id TEXT  PRIMARY KEY NOT NULL ,
      alarmId TEXT NOT NULL ,
      time INTEGER AS Long  NOT NULL ,
-     state TEXT  NOT NULL
+     state TEXT  NOT NULL,
+     CONSTRAINT AlarmRecord_fk FOREIGN KEY ("alarmId") REFERENCES "Alarm" ("id") ON DELETE CASCADE
 );
 
 -- 记录
@@ -17,8 +18,11 @@ SELECT * FROM AlarmRecord ORDER BY time DESC ;
 selectByAlarmId:
 SELECT * FROM AlarmRecord WHERE alarmId = ?;
 
+selectAfterTime:
+SELECT * FROM AlarmRecord WHERE time>?;
+
 insertAlarmRecord:
-INSERT INTO AlarmRecord (alarmId, time, state) VALUES (?, ?, ?);
+INSERT OR REPLACE INTO AlarmRecord VALUES ?;
 
 deleteById:
 DELETE FROM AlarmRecord WHERE id = ?;

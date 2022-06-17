@@ -19,7 +19,7 @@ import kotlin.collections.List;
 
 
 CREATE  TABLE Alarm(
-    id TEXT NOT NULL PRIMARY KEY,
+    id TEXT PRIMARY KEY NOT NULL,
     hour INTEGER NOT NULL,
     minute INTEGER NOT NULL,
      ringtone TEXT NOT NULL,
@@ -30,14 +30,19 @@ CREATE  TABLE Alarm(
      marks TEXT NOT NULL,
      ttsType TEXT AS TTSType NOT NULL,
      ttsVoice TEXT AS TTSVoice NOT NULL,
-     planId INTEGER  NOT NULL
+     created INTEGER NOT NULL,
+     planId TEXT  NOT NULL,
+     CONSTRAINT alarm_fk FOREIGN KEY ("planId") REFERENCES "Plan" ("id") ON DELETE CASCADE
 );
 
 selectAll:
-SELECT * FROM Alarm;
+SELECT * FROM Alarm ORDER BY hour,minute DESC ;
 
-insertAlarm:
-INSERT OR REPLACE INTO Alarm (id, hour, minute, ringtone, vibration, timeout, dates, exclude, marks, ttsType, ttsVoice, planId) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+selectByPlanId:
+SELECT * FROM Alarm WHERE planId = ?  ORDER BY hour,minute;
+
+insertOrUpdateAlarm:
+INSERT OR REPLACE INTO Alarm  VALUES ?;
 
 deleteById:
 DELETE FROM Alarm WHERE id = ?;
