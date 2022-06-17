@@ -1,0 +1,44 @@
+import app.alanfeng.alarm.Exclude;
+import app.alanfeng.alarm.TTSType;
+import app.alanfeng.alarm.TTSVoice;
+import app.alanfeng.alarm.TimeoutStrategy;
+import kotlin.collections.List;
+
+-- Alarm
+--     id
+--     hour
+--     minute
+--     铃声
+--     振动
+--     超时措施：替换为备用方案、重复响铃、
+--     日期：周几
+--     排除：节假日
+--     备注
+--     TTS播放:备注、通用提醒
+--     TTS声音
+
+
+CREATE  TABLE Alarm(
+    id TEXT NOT NULL PRIMARY KEY,
+    hour INTEGER NOT NULL,
+    minute INTEGER NOT NULL,
+     ringtone TEXT NOT NULL,
+     vibration INTEGER AS Boolean NOT NULL,
+     timeout TEXT AS TimeoutStrategy NOT NULL,
+     dates TEXT AS List<Int> NOT NULL,
+     exclude TEXT AS Exclude NOT NULL,
+     marks TEXT NOT NULL,
+     ttsType TEXT AS TTSType NOT NULL,
+     ttsVoice TEXT AS TTSVoice NOT NULL,
+     planId INTEGER  NOT NULL
+);
+
+selectAll:
+SELECT * FROM Alarm;
+
+insertAlarm:
+INSERT OR REPLACE INTO Alarm (id, hour, minute, ringtone, vibration, timeout, dates, exclude, marks, ttsType, ttsVoice, planId) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+deleteById:
+DELETE FROM Alarm WHERE id = ?;
+

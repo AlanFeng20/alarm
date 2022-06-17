@@ -1,0 +1,19 @@
+import kotlin.collections.List;
+
+CREATE TABLE Plan (
+     id INTEGER PRIMARY KEY AUTOINCREMENT ,
+     name TEXT NOT NULL ,
+     created Integer AS Long
+);
+
+selectAll:
+SELECT * FROM Plan ORDER BY created DESC ;
+
+selectNames:
+SELECT name FROM Plan;
+
+insertPlan:
+INSERT OR REPLACE INTO Plan (name, created) VALUES (?,  ?);
+
+deleteByName:
+DELETE FROM Plan WHERE name = ?;

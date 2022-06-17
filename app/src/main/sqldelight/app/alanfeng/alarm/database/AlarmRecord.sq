@@ -1,0 +1,24 @@
+CREATE TABLE AlarmRecord (
+     id INTEGER  PRIMARY KEY AUTOINCREMENT ,
+     alarmId TEXT NOT NULL ,
+     time INTEGER AS Long  NOT NULL ,
+     state TEXT  NOT NULL
+);
+
+-- 记录
+--     id
+--     Alarm id
+--     时间
+--     状态
+
+selectAll:
+SELECT * FROM AlarmRecord ORDER BY time DESC ;
+
+selectByAlarmId:
+SELECT * FROM AlarmRecord WHERE alarmId = ?;
+
+insertAlarmRecord:
+INSERT INTO AlarmRecord (alarmId, time, state) VALUES (?, ?, ?);
+
+deleteById:
+DELETE FROM AlarmRecord WHERE id = ?;
